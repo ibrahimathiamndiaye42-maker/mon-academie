@@ -94,3 +94,9 @@ export function recommendations(priorities, sessions, today = todayStr(), weekDa
   if (missed) out.push({ subject: null, text: `${missed} séance${missed > 1 ? 's' : ''} passée${missed > 1 ? 's' : ''} n'${missed > 1 ? 'ont' : 'a'} pas été réalisée${missed > 1 ? 's' : ''}.` })
   return out
 }
+
+// Niveau de préparation d'une évaluation : état réel des chapitres liés, sinon valeur saisie.
+export function evalPreparation(e, chapters) {
+  const chs = (e.chapterIds || []).map((id) => chapters.find((c) => c.id === id)).filter(Boolean)
+  return chs.length ? Math.round((100 * chs.reduce((a, c) => a + statusInfo(c.status).weight, 0)) / chs.length) : Number(e.prepared) || 0
+}

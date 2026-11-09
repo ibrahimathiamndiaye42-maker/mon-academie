@@ -42,9 +42,11 @@ export const ACCENTS = {
   orange: { label: 'Orange', light: '#c2410c', dark: '#ff9a5c' }
 }
 
+import { DEFAULT_SKIN } from './utils/theme'
+
 export const DEFAULT_SETTINGS = {
   name: '',
-  theme: 'auto', accent: 'navy', fontSize: 'md', density: 'comfortable',
+  theme: 'dark', skin: DEFAULT_SKIN, fontSize: 'md', density: 'comfortable',
   dailyGoalMin: 180, weeklyGoalMin: 900, sessionMin: 50, breakMin: 10,
   weekStart: 1, showWeekend: true, dayStartHour: 7, dayEndHour: 21,
   notif: { sessions: true, evaluations: true, postponed: true, daily: true, remindBeforeMin: 10, dailyHour: 18 },

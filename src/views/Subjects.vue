@@ -74,7 +74,7 @@ const docCount = (c) => state.documents.filter((d) => d.chapterId === c.id).leng
       <button class="btn primary" @click="newSubject"><Icon name="plus" :size="18" /> Ajouter ma première matière</button>
     </EmptyState>
 
-    <div v-else class="grid" style="grid-template-columns: minmax(260px, 340px) 1fr; align-items: start">
+    <div v-else class="grid split" style="grid-template-columns: minmax(260px, 340px) 1fr; align-items: start">
       <div class="col" style="gap: 10px">
         <button v-for="s in state.subjects" :key="s.id" type="button" class="card flat click" :style="{ textAlign: 'left', cursor: 'pointer', borderColor: selectedId === s.id ? 'var(--accent)' : '', background: selectedId === s.id ? 'var(--accent-soft)' : '' }" @click="selectedId = s.id">
           <div class="row"><SubjectBadge :subject="s" /><div class="grow"><div style="font-weight:600">{{ s.name }}</div><div class="small muted">{{ stats(s).chs.length }} chapitre{{ stats(s).chs.length > 1 ? 's' : '' }} · moyenne {{ fmtGrade(stats(s).avg) }}</div></div><span class="num small">{{ stats(s).progress }}%</span></div>

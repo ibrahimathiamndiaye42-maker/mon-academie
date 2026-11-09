@@ -2,7 +2,7 @@
 
 Assistant académique personnel : emploi du temps, planning de révision, chronomètre fiable, cours PDF annotés, matières/chapitres, notes, priorités, statistiques. Application web installable (PWA), **locale d'abord** : tes données restent sur ton appareil, sans serveur, sans abonnement, sans IA.
 
-Technologies : Vue 3, Vite, IndexedDB, PDF.js, fflate (sauvegardes ZIP), PWA (hors connexion).
+**Version 2 : refonte visuelle premium** (voir §9). Technologies : Vue 3, Vite, IndexedDB, PDF.js, fflate (sauvegardes ZIP), PWA (hors connexion).
 
 ## 1. Installation (une seule fois)
 
@@ -34,7 +34,7 @@ Le dossier `dist/` contient l'application finale. Héberge-le sur n'importe quel
 ```powershell
 npm test
 ```
-22 tests automatiques : calculs de notes, chronomètre (pauses exclues, reprise après fermeture), conflits d'emploi du temps, priorités, statistiques, sauvegarde/restauration ZIP avec PDF et contrôle d'intégrité, affichage de toutes les pages.
+47 tests automatiques : calculs de notes, chronomètre (pauses exclues, reprise après fermeture), conflits d'emploi du temps, priorités, statistiques, sauvegarde/restauration ZIP avec PDF et contrôle d'intégrité, affichage de toutes les pages, moteur de thèmes (contraste des 8 thèmes en clair et en sombre, aperçu, application, persistance, migration).
 
 ## 5. Sauvegarde et restauration
 
@@ -82,3 +82,13 @@ Aide-mémoire : toutes les données passent par `store.js` ; chaque écran lit `
 - Déplacement des séances par fenêtre dédiée (pas de glisser-déposer).
 - Pas de synchronisation entre appareils (architecture prête, volontairement non développée) ; PDF protégés par mot de passe non pris en charge.
 - Les données vivent dans le navigateur : vider les données du site les efface. Sauvegarde régulière indispensable.
+
+## 9. Refonte visuelle (v2)
+
+- **Design system centralisé** : `src/utils/theme.js` (8 thèmes + calcul de toutes les variables CSS), `src/utils/color.js` (mélanges, contraste WCAG), `src/styles.css` (couche « premium » en fin de fichier). Aucune page n'a de couleur codée en dur : tout passe par les variables.
+- **Paramètres → Personnalisation des couleurs** : 8 thèmes (Violet Premium, Ocean Blue, Emerald, Midnight, Rose Luxury, Gold Prestige, Arctic, Personnalisé), mode sombre/clair/auto, couleurs principale/secondaire/accent + boutons, éléments actifs, progression et arrière-plan (sélecteur et code HEX), intensité des dégradés, des effets lumineux et des ombres, arrondi, style des cartes (unies, verre, contour). Aperçu en direct sur toute l'application, boutons Appliquer / Annuler / Réinitialiser. Enregistrement sur l'appareil (IndexedDB), conservé après fermeture.
+- Les textes restent lisibles quelles que soient les couleurs : le contraste est recalculé automatiquement.
+- **Tableau de bord** : niveau et points (calculés sur ton activité réelle), série de jours, programme du jour, tâches prioritaires, aperçu de la semaine, performances par matière, objectifs, prochains examens, conseils (règles simples, sans IA), récompenses.
+- **En-tête** : recherche globale (matières, chapitres, cours, évaluations), notifications (séances du jour, séances manquées, évaluations proches), profil.
+- **Mobile** : barre de navigation flottante, champs 16 px (pas de zoom automatique sur iPhone), cartes empilées, tableaux défilants.
+- Police : Plus Jakarta Sans, incluse dans l'application (fonctionne hors connexion).

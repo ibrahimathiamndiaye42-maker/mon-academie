@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { state, wipeEverything, reloadAll, markBackupDone, confirmDialog, toast } from '../store'
-import { ACCENTS } from '../constants'
+import ThemeEditor from '../components/ThemeEditor.vue'
 import { buildBackup, parseBackup, applyBackup, downloadBytes, backupFilename } from '../utils/backup'
 import { notificationPermission, askPermission } from '../notify'
 import Icon from '../components/Icon.vue'
@@ -61,13 +61,12 @@ const rows = [['subjects', 'Matières'], ['chapters', 'Chapitres'], ['timetable'
 <template>
   <div class="page">
     <div class="page-head"><div><h1>Paramètres</h1><p>Tout est enregistré automatiquement sur cet appareil.</p></div></div>
+    <ThemeEditor style="margin-bottom:16px" />
     <div class="grid g2" style="align-items:start">
-      <div class="card col" style="gap:16px"><h2>Apparence</h2>
-        <div class="field"><label>Thème</label><div class="seg"><button :class="{ on: s.theme === 'light' }" @click="s.theme = 'light'"><Icon name="sun" :size="15" /> Clair</button><button :class="{ on: s.theme === 'dark' }" @click="s.theme = 'dark'"><Icon name="moon" :size="15" /> Sombre</button><button :class="{ on: s.theme === 'auto' }" @click="s.theme = 'auto'">Automatique</button></div></div>
-        <div class="field"><label>Couleur d'accentuation</label><div class="row wrap"><button v-for="(a, k) in ACCENTS" :key="k" class="btn sm" :class="{ primary: s.accent === k }" @click="s.accent = k"><i class="dot" :style="{ background: a.light }" /> {{ a.label }}</button></div></div>
+      <div class="card col" style="gap:16px"><h2>Affichage</h2>
         <div class="field"><label>Taille du texte</label><div class="seg"><button :class="{ on: s.fontSize === 'sm' }" @click="s.fontSize = 'sm'">Petite</button><button :class="{ on: s.fontSize === 'md' }" @click="s.fontSize = 'md'">Normale</button><button :class="{ on: s.fontSize === 'lg' }" @click="s.fontSize = 'lg'">Grande</button></div></div>
         <div class="field"><label>Densité</label><div class="seg"><button :class="{ on: s.density === 'comfortable' }" @click="s.density = 'comfortable'">Confortable</button><button :class="{ on: s.density === 'compact' }" @click="s.density = 'compact'">Compacte</button></div></div>
-        <div class="field"><label for="nm">Ton prénom (pour l'accueil)</label><input id="nm" v-model="s.name" class="input" maxlength="40" /></div>
+        <div class="field"><label for="nm">Ton prénom (accueil et profil)</label><input id="nm" v-model="s.name" class="input" maxlength="40" /></div>
       </div>
       <div class="card col" style="gap:14px"><h2>Organisation</h2>
         <div class="form-grid"><div class="field"><label for="d1">Objectif quotidien (min)</label><input id="d1" v-model.number="s.dailyGoalMin" type="number" min="15" step="15" class="input" /></div><div class="field"><label for="d2">Objectif hebdomadaire (min)</label><input id="d2" v-model.number="s.weeklyGoalMin" type="number" min="30" step="30" class="input" /></div>

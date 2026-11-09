@@ -1,6 +1,6 @@
 {
   "name": "mon-academie",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "description": "MON ACADÉMIE — assistant académique personnel (Vue 3, IndexedDB, PDF.js, PWA)",
@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "fflate": "0.8.2",
     "pdfjs-dist": "4.10.38",
     "vue": "3.5.13",

@@ -1,7 +1,8 @@
 // Gestion centralisée des données : état réactif + persistance IndexedDB + règles métier.
 import { reactive, watch } from 'vue'
 import * as db from './db'
-import { DEFAULT_SETTINGS, ACCENTS } from './constants'
+import { DEFAULT_SETTINGS } from './constants'
+import { buildTheme, DEFAULT_SKIN } from './utils/theme'
 import { uid, todayStr, dateOfTs, addDays, weekDates } from './utils/time'
 import * as T from './utils/timer'
 import { sessionConflicts, courseConflicts } from './utils/schedule'
@@ -12,7 +13,7 @@ const clone = (o) => JSON.parse(JSON.stringify(o))
 export const state = reactive({
   ready: false, loadError: null, now: Date.now(),
   settings: clone(DEFAULT_SETTINGS), timer: null,
-  toasts: [], confirmDlg: null, installEvent: null,
+  toasts: [], confirmDlg: null, installEvent: null, preview: null,
   subjects: [], chapters: [], timetable: [], sessions: [], logs: [], evaluations: [], documents: [], annotations: [], bookmarks: []
 })
 
@@ -35,24 +36,32 @@ function mergeSettings(saved) {
   const s = clone(DEFAULT_SETTINGS)
   for (const k of Object.keys(saved || {})) {
     if (k === 'notif') s.notif = { ...s.notif, ...saved.notif }
+    else if (k === 'skin') s.skin = { ...DEFAULT_SKIN, ...saved.skin }
     else s[k] = saved[k]
   }
+  if (saved && !saved.skin) s.theme = 'dark' // première ouverture après la refonte : thème Violet Premium sombre
   return s
 }
 let mql = null
+let animTimer = null
 export function applyAppearance() {
   if (typeof document === 'undefined') return
   const s = state.settings
   const root = document.documentElement
-  const dark = s.theme === 'dark' || (s.theme === 'auto' && globalThis.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)
-  root.dataset.theme = dark ? 'dark' : 'light'
-  const acc = ACCENTS[s.accent] || ACCENTS.navy
-  root.style.setProperty('--accent', dark ? acc.dark : acc.light)
-  root.style.setProperty('--accent-ink', dark ? '#0b1020' : '#ffffff')
+  const prefersDark = globalThis.matchMedia ? matchMedia('(prefers-color-scheme: dark)').matches : true
+  const wantDark = s.theme === 'dark' || (s.theme === 'auto' && prefersDark)
+  const skin = state.preview || s.skin
+  const t = buildTheme(skin, wantDark)
+  root.classList.add('theme-anim')
+  clearTimeout(animTimer)
+  animTimer = setTimeout(() => root.classList.remove('theme-anim'), 450)
+  for (const [k, v] of Object.entries(t.vars)) root.style.setProperty(k, v)
+  root.dataset.theme = t.dark ? 'dark' : 'light'
+  root.style.colorScheme = t.dark ? 'dark' : 'light'
   root.dataset.size = s.fontSize
   root.dataset.density = s.density
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.setAttribute('content', dark ? '#0e1320' : acc.light)
+  if (meta) meta.setAttribute('content', t.bg)
 }
 let watching = false
 function startWatchers() {
@@ -64,6 +73,7 @@ function startWatchers() {
     clearTimeout(timer)
     timer = setTimeout(saveSettingsNow, 250)
   }, { deep: true })
+  watch(() => state.preview, applyAppearance, { deep: true })
   if (globalThis.matchMedia) {
     mql = matchMedia('(prefers-color-scheme: dark)')
     mql.addEventListener?.('change', () => { if (state.settings.theme === 'auto') applyAppearance() })

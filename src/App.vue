@@ -7,6 +7,7 @@ import { workElapsed } from './utils/timer'
 import { fmtHMS } from './utils/time'
 import Icon from './components/Icon.vue'
 import Modal from './components/Modal.vue'
+import TopBar from './components/TopBar.vue'
 
 const route = useRoute()
 const NAV = [
@@ -70,6 +71,7 @@ function answer(v) { const d = state.confirmDlg; state.confirmDlg = null; d?.res
         <div class="sidebar-foot"><button v-if="state.installEvent" class="btn sm" style="width:100%" @click="install"><Icon name="download" :size="16" /> Installer l'application</button></div>
       </aside>
       <main>
+        <TopBar />
         <router-view v-slot="{ Component }"><transition name="page" mode="out-in"><component :is="Component" /></transition></router-view>
       </main>
     </div>
